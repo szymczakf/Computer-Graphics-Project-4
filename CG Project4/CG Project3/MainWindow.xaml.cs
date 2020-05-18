@@ -2049,12 +2049,15 @@ namespace CG_Project3
                         ymin = polygon.ys[i + 1];
                     }
 
-                    AET edge = new AET();
-                    edge.x = xmin;
-                    edge.ymax = ymax;
-                    edge.oneOverM = dx / dy;
+                    if(dy != 0)
+                    {
+                        AET edge = new AET();
+                        edge.x = xmin;
+                        edge.ymax = ymax;
+                        edge.oneOverM = dx / dy;
 
-                    EdgeTable.Find(x => x.y == ymin).aETs.Add(edge);
+                        EdgeTable.Find(x => x.y == ymin).aETs.Add(edge);
+                    }
                 }
                 else
                 {
@@ -2233,12 +2236,15 @@ namespace CG_Project3
                         ymin = polygon.ys[i + 1];
                     }
 
-                    AET edge = new AET();
-                    edge.x = xmin;
-                    edge.ymax = ymax;
-                    edge.oneOverM = dx / dy;
+                    if(dy != 0)
+                    {
+                        AET edge = new AET();
+                        edge.x = xmin;
+                        edge.ymax = ymax;
+                        edge.oneOverM = dx / dy;
 
-                    EdgeTable.Find(x => x.y == ymin).aETs.Add(edge);
+                        EdgeTable.Find(x => x.y == ymin).aETs.Add(edge);
+                    }
                 }
                 else
                 {
@@ -2488,6 +2494,8 @@ namespace CG_Project3
             {
                 this.lines = new List<Line>();
                 this.circles = new List<Circle>();
+                this.polygons = new List<Polygon>();
+                this.rectangles = new List<MyRectangle>();
                 string[] lines = System.IO.File.ReadAllLines(openFileDialog.FileName);
                 int length = lines.Count();
                 int i = 0;
@@ -2560,6 +2568,7 @@ namespace CG_Project3
                         i = i + 12;
                     }
                 }
+                ClearImg();
                 if (!anti)
                     RedrawFigures();
                 else
