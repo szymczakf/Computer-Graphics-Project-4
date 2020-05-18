@@ -29,6 +29,7 @@
             <ComboBoxItem Content="Clip"/>
             <ComboBoxItem Content="S. Fill"/>
             <ComboBoxItem Content="P. Fill"/>
+            <ComboBoxItem Content="Flood Fill"/>
         </ComboBox>
         <ComboBox x:Name="shapeBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="70,98,0,0" Width="75" SelectedIndex="0">
             <ComboBoxItem Content="Line"/>

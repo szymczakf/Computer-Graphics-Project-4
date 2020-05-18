@@ -129,6 +129,13 @@ namespace CG_Project3
                 writeableBitmap.Unlock();
             }
 
+            writeableBitmap.Lock();
+
+            for (int x = 0; x < width; x++)
+                for (int y = 0; y < height; y++)
+                    DrawPixel(x, y, Colors.White);
+
+            writeableBitmap.Unlock();
         }
 
         private void mouseClick(object sender, MouseButtonEventArgs e)
@@ -994,6 +1001,12 @@ namespace CG_Project3
             {
                 System.Windows.MessageBox.Show("Option not supported", "Error");
             }
+
+            else if (toolBox.SelectedIndex == 6)
+            {
+                Color c = GetColor(posX, posY);
+                FloodFill(posX, posY, c, buttColor);
+            }
         }
 
         int Sign(int Dx, int Dy, int Ex, int Ey, int Fx, int Fy)
@@ -1148,9 +1161,6 @@ namespace CG_Project3
 
             if(x < drawSpace.Source.Width && x > 0 && y < drawSpace.Source.Height && y > 0)
             {
-                try
-                {
-                    writeableBitmap.Lock();
 
                     unsafe
                     {
@@ -1168,17 +1178,14 @@ namespace CG_Project3
                     }
 
                     writeableBitmap.AddDirtyRect(new Int32Rect(column, row, 1, 1));
-                }
-                finally
-                {
-                    writeableBitmap.Unlock();
-                }
             }
         }
 
         void DrawBrush(int x, int y, Color color, int thickness)
         {
-            if(thickness == 1)
+            writeableBitmap.Lock();
+
+            if (thickness == 1)
                 DrawPixel(x, y, color);
 
             if (thickness == 3)
@@ -1219,10 +1226,14 @@ namespace CG_Project3
                 for (int i = -1; i < 2; i++)
                     DrawPixel(x + i, y + 3, color);
             }
+
+            writeableBitmap.Unlock();
         }
 
         void DrawLine(Line line)
         {
+            writeableBitmap.Lock();
+
             int thick = line.thickness;
             int dx = line.endX - line.initX;
             int dy = line.endY - line.initY;
@@ -1423,10 +1434,14 @@ namespace CG_Project3
                     }
                 }
             }
+
+            writeableBitmap.Unlock();
         }
 
         void DrawCircle(Circle circle)
         {
+            writeableBitmap.Lock();
+
             int thick = circle.thickness; 
             int dE = 3;
             int dSE = 5 - 2 * circle.radius;
@@ -1466,10 +1481,14 @@ namespace CG_Project3
                 DrawBrush(-y + circle.x, -x + circle.y, circle.color, thick);
                 DrawBrush(y + circle.x, -x + circle.y, circle.color, thick);
             }
+
+            writeableBitmap.Unlock();
         }
 
         void DrawSemiCircle(Circle circle, int Ex, int Ey, int sign)
         {
+            writeableBitmap.Lock();
+
             int thick = circle.thickness;
             int dE = 3;
             int dSE = 5 - 2 * circle.radius;
@@ -1527,10 +1546,14 @@ namespace CG_Project3
                 if (Sign(circle.x, circle.y, Ex, Ey, y + circle.x, -x + circle.y) == sign)
                     DrawBrush(y + circle.x, -x + circle.y, circle.color, thick);
             }
+
+            writeableBitmap.Unlock();
         }
 
         void DrawPolygon(Polygon polygon)
         {
+            writeableBitmap.Lock();
+
             int length = polygon.xs.Count;
             for (int i = 0; i < length; i++)
             {
@@ -1571,10 +1594,14 @@ namespace CG_Project3
                 FillPolygonPatt(polygon);
                 pattern = olsource;
             }
+
+            writeableBitmap.Unlock();
         }
 
         void DrawRectangle(MyRectangle rectangle)
         {
+            writeableBitmap.Lock();
+
             int thick = rectangle.thickness;
             int inX = rectangle.initX;
             int inY = rectangle.initY;
@@ -1599,6 +1626,8 @@ namespace CG_Project3
                 FillRectanglePatt(rectangle);
                 pattern = olsource;
             }
+
+            writeableBitmap.Unlock();
         }
 
         void ClearImg()
@@ -1672,6 +1701,8 @@ namespace CG_Project3
 
         void WuLine(Line line)
         {
+            writeableBitmap.Lock();
+
             int x1 = line.initX;
             int x2 = line.endX;
             int y1 = line.initY;
@@ -1751,6 +1782,8 @@ namespace CG_Project3
                     y += m;
                 }
             }
+
+            writeableBitmap.Unlock();
         }
 
         double D(int R, int y)
@@ -1760,6 +1793,8 @@ namespace CG_Project3
 
         void WuCircle(Circle circle)
         {
+            writeableBitmap.Lock();
+
             Color c = circle.color;
             int cx = circle.x;
             int cy = circle.y;
@@ -1800,10 +1835,14 @@ namespace CG_Project3
                 DrawPixel(cx - y + 1, cy - x + 1, Color.FromArgb((byte)c1, c.R, c.G, c.B));
                 DrawPixel(cx - y + 1, cy - x, Color.FromArgb((byte)c2, c.R, c.G, c.B));
             }
+
+            writeableBitmap.Unlock();
         }
 
         void DrawPolygonAnti(Polygon polygon)
         {
+            writeableBitmap.Lock();
+
             int length = polygon.xs.Count;
             for (int i = 0; i < length; i++)
             {
@@ -1830,10 +1869,14 @@ namespace CG_Project3
                     WuLine(line);
                 }
             }
+
+            writeableBitmap.Unlock();
         }
 
         void DrawRectangleAnti(MyRectangle rectangle)
         {
+            writeableBitmap.Lock();
+
             int thick = rectangle.thickness;
             int inX = rectangle.initX;
             int inY = rectangle.initY;
@@ -1844,6 +1887,8 @@ namespace CG_Project3
             WuLine(new Line() { initX = inX, initY = inY, endX = inX, endY = enY, color = col, thickness = thick });
             WuLine(new Line() { initX = enX, initY = enY, endX = enX, endY = inY, color = col, thickness = thick });
             WuLine(new Line() { initX = enX, initY = enY, endX = inX, endY = enY, color = col, thickness = thick });
+
+            writeableBitmap.Unlock();
         }
 
         void RedrawAnti()
@@ -1886,6 +1931,8 @@ namespace CG_Project3
 
         void LiangBarsky(Point p1, Point p2, MyRectangle clip)
         {
+            writeableBitmap.Lock();
+
             float dx = (float)(p2.X - p1.X), dy = (float)(p2.Y - p1.Y);
             float tE = 0, tL = 1;
 
@@ -1937,10 +1984,14 @@ namespace CG_Project3
                     }
                 }
             }
+
+            writeableBitmap.Unlock();
         }
 
         void FillRectangle(MyRectangle rect)
         {
+            writeableBitmap.Lock();
+
             int maxy, miny;
             if (rect.initY < rect.endY)
             {
@@ -1986,6 +2037,8 @@ namespace CG_Project3
                 y = i;
                 DrawLine(new Line() { initX = (int)ActiveEdgeTable[0].x, initY = y, endX = (int)ActiveEdgeTable[1].x, endY = y, thickness = 1, color = buttColor });
             }
+
+            writeableBitmap.Unlock();
         }
 
         private static int CompareEdges(AET e1, AET e2)
@@ -1999,6 +2052,8 @@ namespace CG_Project3
 
         void FillPolygon(Polygon polygon)
         {
+            writeableBitmap.Lock();
+
             int maxy = 0;
             int miny = Int32.MaxValue;
 
@@ -2108,10 +2163,14 @@ namespace CG_Project3
                 foreach (var item in ActiveEdgeTable)
                     item.Step();
             }
+
+            writeableBitmap.Unlock();
         }
 
         void FillRectanglePatt(MyRectangle rect)
         {
+            writeableBitmap.Lock();
+
             int maxy, miny;
             if (rect.initY < rect.endY)
             {
@@ -2182,10 +2241,14 @@ namespace CG_Project3
                     DrawPixel(j, y, col);
                 }
             }
+
+            writeableBitmap.Unlock();
         }
 
         void FillPolygonPatt(Polygon polygon)
         {
+            writeableBitmap.Lock();
+
             int maxy = 0;
             int miny = Int32.MaxValue;
 
@@ -2322,6 +2385,8 @@ namespace CG_Project3
                 foreach (var item in ActiveEdgeTable)
                     item.Step();
             }
+
+            writeableBitmap.Unlock();
         }
 
         private System.Drawing.Bitmap BitmapFromSource(BitmapSource source)
@@ -2333,6 +2398,53 @@ namespace CG_Project3
             source.CopyPixels(Int32Rect.Empty, data.Scan0, data.Height * data.Stride, data.Stride);
             bmp.UnlockBits(data);
             return bmp;
+        }
+
+        Color GetColor(int x, int y)
+        {
+            var color = new Color();
+            unsafe
+            {
+                IntPtr pBackBuffer = writeableBitmap.BackBuffer;
+
+                pBackBuffer += y * writeableBitmap.BackBufferStride;
+                pBackBuffer += x * 4;
+
+                int color_data = *((int*)pBackBuffer);
+                color.B = (byte)((color_data & 0x000000FF) >> 0);
+                color.G = (byte)((color_data & 0x0000FF00) >> 8);
+                color.R = (byte)((color_data & 0x00FF0000) >> 16);
+                color.A = (byte)((color_data & 0xFF000000) >> 24);
+            }
+            return color;
+        }
+
+        void FloodFill(int x, int y, Color old, Color newCol)
+        {
+            writeableBitmap.Lock();
+
+            Stack<(int, int)> stack = new Stack<(int, int)>();
+
+            stack.Push((x, y));
+
+            while(stack.Count != 0)
+            {
+                var elem = stack.Pop();
+
+                int ox = elem.Item1;
+                int oy = elem.Item2;
+
+                if(GetColor(ox, oy) == old)
+                {
+                    stack.Push((ox + 1, oy));
+                    stack.Push((ox, oy + 1));
+                    stack.Push((ox - 1, oy));
+                    stack.Push((ox, oy - 1));
+                    DrawPixel(ox, oy, newCol);
+                }
+            }
+
+            writeableBitmap.Unlock();
         }
 
         class Line
